@@ -1,0 +1,11 @@
+-Pøi vytváøení postavy a nebo pøi sundání zbranì z postavy, je equipedWeapon == null - Pøi vytvoøení postavy je to nyní úmyslnì, aby se dalo nasimulovat nasazení zbranì na zaèátku hry.
+Ale je to nechtìný stav, dokonce i intellisense upozoròuje na possibly null reference. Dalo by se vyøešit vytvoøením defaultního objektu "ruce" nebo "pìst". Jaké další øešení jsou možné ?
+
+-Character.TotalDamage (má znaèit celkový zpùsobitelný Damage, teï je to souèet Character.BaseDamage + Character.EquipedWeapon.DamageModifier) - nyní se aktualizuje po nasazení nebo sundání
+zbranì z characteru. Výpoèet TotalDamage by asi mìl být pøímo ve tøídì Characteru místo tøídy EquipableWeapon, jako je to teï ? Jenomže jak pak øešit aktualizaci Character.TotalDamage
+pøi zmìnì EquipedWeapon ? Možná event ? (s eventama zatím moc neumím). Když bude výpoèet TotalDamage na Characteru, umožní to pozdìji implementovat i další Itemy, nebo kouzla, která mohou
+dále ovlivòovat výslednou hodnotu TotalDamage
+
+-Váhový systém zatím neimplementován
+
+-Všechni èlenové jsou public, kde bych se mìl zamyslet nad zmìnama ? (private, protected, sealed)
