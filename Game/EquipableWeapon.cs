@@ -10,18 +10,20 @@ namespace Game
     {
         public abstract int DamageModifier { get; set; }
 
-        public override void EquipItem()
+        public override void EquipItem(Character character)
         {
-            Character.EquipedWeapon = this;
-            Character.Inventory.Items.Remove(this);
-            Character.TotalDamage = Character.BaseDamage + Character.EquipedWeapon.DamageModifier;
+            //character.EquipedWeapon = (EquipableWeapon)character.Inventory.Items.Find(x => x.Id == this.Id);
+            character.EquipedWeapon = (EquipableWeapon?)character.Inventory.Items.Find(this.Equals);
+            character.Inventory.Items.Remove(this);
+            //Character.TotalDamage = Character.BaseDamage + Character.EquipedWeapon.DamageModifier;
         }
 
-        public override void UnEquipItem()
+        public override void UnEquipItem(Character character)
         {
-            Character.Inventory.Items.Add(this);
-            Character.EquipedWeapon = null;
-            Character.TotalDamage = Character.BaseDamage + 0;
+            character.Inventory.Items.Add(this);
+            character.EquipedWeapon = null;
+            //Character.TotalDamage = Character.BaseDamage + 0;
+            
         }
     }
 }

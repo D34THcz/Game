@@ -11,14 +11,20 @@ namespace Game
         public abstract string Name { get; set; }
         public abstract int Hitpoint { get; set; }
         public abstract int BaseDamage { get; set; }  
-        public abstract EquipableWeapon EquipedWeapon { get; set; }
+        public abstract EquipableWeapon? EquipedWeapon { get; set; }
         public abstract Inventory Inventory { get; set; }
         public int TotalDamage { get; set; }
+        public abstract int MaxWeight { get; set; }
 
         public virtual void Attack(Character targetCharacter)
         {
             targetCharacter.Hitpoint -= this.TotalDamage;
         }
-        
+
+        public void EquipWeapon(EquipableWeapon weapon) 
+        {
+            EquipedWeapon = (EquipableWeapon?)Inventory.Items.Find(x => x == weapon);
+            Inventory.Items.Remove(weapon);
+        }
     }
 }
