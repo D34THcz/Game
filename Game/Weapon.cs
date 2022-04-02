@@ -8,7 +8,7 @@ namespace Game
 {
     public class Weapon : EquipableWeapon
     {
-        public override int DamageModifier { get; set; }
+        public override int Damage { get; set; }
         public override string Name { get; set; }
         public override int Id { get; set; }
         public override int Weight { get; set; }
@@ -20,7 +20,7 @@ namespace Game
             Id = _id + 1;
             _id += 1;
             Weight = weight;
-            DamageModifier = damageModifier;
+            Damage = damageModifier;
         }
 
         public override void UseItem(Character character)

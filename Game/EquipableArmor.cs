@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Game
+﻿namespace Game
 {
     public abstract class EquipableArmor : Equipable
     {
-        public abstract int ArmorModifier { get; set; }
-
-
+        public abstract int Armor { get; set; }
     }
 }

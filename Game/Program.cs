@@ -10,8 +10,8 @@ Weapon mace = new("Mace", 11, 4);
 Food bread = new("Bread", 1, 10);
 
 // Instantiate Player classes. Inventory classes are instantiated within Player class
-Player player = new(Console.ReadLine()??"Player", 10, 100, baseDamage: 1);
-Player enemy = new("Enemy", 10, 100, baseDamage: 1);
+Player player = new(Console.ReadLine()??"Player", 10, 100, strength: 1);
+Player enemy = new("Enemy", 10, 100, strength: 1);
 
 // Assign created weapons and food to inventories of created players
 player.Inventory.AddItem(sword);
@@ -25,7 +25,7 @@ player.EquipWeapon(sword);
 enemy.EquipWeapon(dagger);
 
 // Write in console stats of both players
-Console.WriteLine($"\nYour hero: {player.Name}\nHitPoints: {player.Hitpoint}\nEquiped weapon: {player.EquipedWeapon?.Name}\nWeight: XXXXXX/{player.MaxWeight}");
+Console.WriteLine($"\nYour hero: {player.Name}\nHitPoints: {player.Hitpoint}\nEquiped weapon: {player.EquipedWeapon?.Name}\nTotal damage: {player.TotalDamage}\nWeight: XXXXXX/{player.MaxWeight}");
 Console.WriteLine($"\nYour enemy: {enemy.Name}\nHitPoints: {enemy.Hitpoint}\nEquiped weapon: {enemy.EquipedWeapon?.Name}");
 Console.WriteLine("\nFIGHT!");
 Console.ReadLine();
@@ -33,12 +33,12 @@ Console.ReadLine();
 // Battle loop
 while (player.Hitpoint > 0 && enemy.Hitpoint > 0)
 {
-    player.Attack(enemy);
+    player.DealDamage(enemy);
     Console.WriteLine($"{player.Name} attacks for {player.TotalDamage} damage. {enemy.Name} have {enemy.Hitpoint} hitpoints left.");
     Console.ReadLine();
     if (enemy.Hitpoint >= 1)
     {
-        enemy.Attack(player);
+        enemy.DealDamage(player);
         Console.WriteLine($"{enemy.Name} attacks for {enemy.TotalDamage} damage. {player.Name} have {player.Hitpoint} hitpoints left.");
         Console.ReadLine();
 

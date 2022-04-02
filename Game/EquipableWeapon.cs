@@ -8,6 +8,6 @@ namespace Game
 {
     public abstract class EquipableWeapon : Equipable
     {
-        public abstract int DamageModifier { get; set; }
+        public abstract int Damage { get; set; }
     }
 }
