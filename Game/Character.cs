@@ -13,8 +13,20 @@ namespace Game
         public abstract int BaseDamage { get; set; }  
         public abstract EquipableWeapon? EquipedWeapon { get; set; }
         public abstract Inventory Inventory { get; set; }
-        public int TotalDamage { get; set; }
         public abstract int MaxWeight { get; set; }
+        private int _totalDamage;
+        public int TotalDamage
+        {
+            get
+            {
+                RefreshTotalDamage();
+                return _totalDamage;
+            }
+            set
+            {
+                _totalDamage = value;
+            }
+        }
 
         public virtual void Attack(Character targetCharacter)
         {
@@ -23,8 +35,28 @@ namespace Game
 
         public void EquipWeapon(EquipableWeapon weapon) 
         {
+            
+            if(EquipedWeapon != null)
+                Inventory.Items.Add(EquipedWeapon);
             EquipedWeapon = (EquipableWeapon?)Inventory.Items.Find(x => x == weapon);
             Inventory.Items.Remove(weapon);
+            RefreshTotalDamage();
+        }
+
+        public void UnEquipWeapon()
+        {
+            if(EquipedWeapon != null)
+                Inventory.Items.Add(EquipedWeapon);
+            EquipedWeapon = null;
+            RefreshTotalDamage();
+        }
+
+        public void RefreshTotalDamage()
+        {
+            var WeaponModifier = 0;
+            if (EquipedWeapon != null)
+                WeaponModifier = EquipedWeapon.DamageModifier;
+            _totalDamage = BaseDamage + WeaponModifier;
         }
     }
 }

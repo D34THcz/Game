@@ -19,6 +19,5 @@ namespace Game
         {
             Items.Remove(item);            
         }
-
     }
 }

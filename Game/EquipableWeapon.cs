@@ -12,18 +12,16 @@ namespace Game
 
         public override void EquipItem(Character character)
         {
-            //character.EquipedWeapon = (EquipableWeapon)character.Inventory.Items.Find(x => x.Id == this.Id);
             character.EquipedWeapon = (EquipableWeapon?)character.Inventory.Items.Find(this.Equals);
             character.Inventory.Items.Remove(this);
-            //Character.TotalDamage = Character.BaseDamage + Character.EquipedWeapon.DamageModifier;
+            character.RefreshTotalDamage();
         }
 
         public override void UnEquipItem(Character character)
         {
             character.Inventory.Items.Add(this);
             character.EquipedWeapon = null;
-            //Character.TotalDamage = Character.BaseDamage + 0;
-            
+            character.RefreshTotalDamage();
         }
     }
 }
