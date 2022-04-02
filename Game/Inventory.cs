@@ -8,7 +8,7 @@ namespace Game
 {
     public class Inventory
     {
-        public List<Item> Items = new List<Item>();
+        public List<Item> Items = new();
                 
         public void AddItem(Item item)
         {
@@ -17,7 +17,7 @@ namespace Game
 
         public void DestroyItem(Item item)
         {
-            Items.Remove(item);            
+            Items.Remove(item);
         }
     }
 }

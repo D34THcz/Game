@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    public abstract class Item
+    public abstract class Item 
     {
         public abstract string Name { get; set; }
         public abstract int Id { get; set; }
         public abstract int Weight { get; set; }
 
-        public abstract void UseItem();
-        public abstract void DestroyItem();
+        public abstract void UseItem(Character character);
     }
 }

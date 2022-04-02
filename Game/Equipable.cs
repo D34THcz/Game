@@ -8,7 +8,6 @@ namespace Game
 {
     public abstract class Equipable : Item
     {
-        public abstract void EquipItem(Character character);
-        public abstract void UnEquipItem(Character character);
+       
     }
 }

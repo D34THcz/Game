@@ -18,18 +18,15 @@ namespace Game
         {
             Name = name;
             Id = _id + 1;
+            _id += 1;
             Weight = weight;
             DamageModifier = damageModifier;
         }
 
-        public override void UseItem()
+        public override void UseItem(Character character)
         {
-            throw new NotImplementedException();
-        }
-
-        public override void DestroyItem()
-        {
-            throw new NotImplementedException();
+            Console.WriteLine("You killed yourself");
+            character.Hitpoint = 0;
         }
     }
 }

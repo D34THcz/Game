@@ -2,38 +2,35 @@
 
 Console.Write("Enter your name: ");
 
-// Vytvoření objektů zbraní a jídla
-Weapon sword = new Weapon("Sword", 10, 3);
-Weapon bow = new Weapon("Bow", 6, 2);
-Weapon dagger = new Weapon("Dagger", 3, 1);
-Weapon mace = new Weapon("Mace", 11, 4);
-Food bread = new Food("Bread", 1, 10);
+// Instantiate Weapon and Food classes
+Weapon sword = new("Sword", 10, 3);
+Weapon bow = new("Bow", 6, 2);
+Weapon dagger = new("Dagger", 3, 1);
+Weapon mace = new("Mace", 11, 4);
+Food bread = new("Bread", 1, 10);
 
-// Vytvoření objektů herních postav player a enemy. Při vytvoření těchto postav se s nimi vytvoří i jejich inventáře
-Player player = new Player(Console.ReadLine()??"Player", 10, 100, baseDamage: 1);
-Player enemy = new Player("Enemy", 10, 100, baseDamage: 1);
+// Instantiate Player classes. Inventory classes are instantiated within Player class
+Player player = new(Console.ReadLine()??"Player", 10, 100, baseDamage: 1);
+Player enemy = new("Enemy", 10, 100, baseDamage: 1);
 
-// Přiřazení vytvořených objektů zbraní a jídla do inventářů
+// Assign created weapons and food to inventories of created players
 player.Inventory.AddItem(sword);
 player.Inventory.AddItem(bow);
+player.Inventory.AddItem(bread);
 enemy.Inventory.AddItem(dagger);
 enemy.Inventory.AddItem(mace);
-player.Inventory.AddItem(bread);
 
-// Nasazení zbraní na postavy (přesun z inventáře na postavu)
-// Nyní možnost přes dvě metody (nutno vyřešit)
-//mace.EquipItem(enemy);
+// Equip weapons on players
 player.EquipWeapon(sword);
-player.UnEquipWeapon();
-player.EquipWeapon(bow);
+enemy.EquipWeapon(dagger);
 
-// Výpis charakteristik postav a výbavy
+// Write in console stats of both players
 Console.WriteLine($"\nYour hero: {player.Name}\nHitPoints: {player.Hitpoint}\nEquiped weapon: {player.EquipedWeapon?.Name}\nWeight: XXXXXX/{player.MaxWeight}");
 Console.WriteLine($"\nYour enemy: {enemy.Name}\nHitPoints: {enemy.Hitpoint}\nEquiped weapon: {enemy.EquipedWeapon?.Name}");
 Console.WriteLine("\nFIGHT!");
 Console.ReadLine();
 
-// Smyčka boje
+// Battle loop
 while (player.Hitpoint > 0 && enemy.Hitpoint > 0)
 {
     player.Attack(enemy);
@@ -50,15 +47,15 @@ while (player.Hitpoint > 0 && enemy.Hitpoint > 0)
     }
     else
     {
-        // Pokud vyhraje hráč, automaticky se po boji spotřebuje jídlo z inventáře, tím se doplní Hitpointy a dále se sundá zbraň z postavy do inventáře                    
+        // If main player wins, he will consume bread recovering him hitpoints. Then his weapon is unequiped and destroyed
         Console.WriteLine($"{player.Name} WINS with {player.Hitpoint} hitpoints left. Consuming bread...");
         var consumable = player.Inventory.Items.Find(x => x.Name == "Bread");
-        consumable?.UseItem();  //metoda zatím není implementována
         if(consumable == null)
-        {
             Console.WriteLine("Item not exist");
-        }
-        //player.UnEquipWeapon(player.EquipedWeapon);
+        else
+            player.UseItem(consumable);
+        player.UnEquipWeapon();
+        player.Inventory.DestroyItem(sword);
         Console.Write($"After consuming bread, {player.Name} have {player.Hitpoint} hitpoints");
         if (player.EquipedWeapon == null)
             Console.Write(" and have no weapon equiped");

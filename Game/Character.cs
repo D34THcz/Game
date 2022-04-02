@@ -51,6 +51,11 @@ namespace Game
             RefreshTotalDamage();
         }
 
+        public void UseItem(Item item)
+        {
+            item.UseItem(this);
+        }
+
         public void RefreshTotalDamage()
         {
             var WeaponModifier = 0;

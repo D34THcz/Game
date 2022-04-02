@@ -18,24 +18,15 @@ namespace Game
         {
             Name = name;
             Id = _id + 1;
+            _id += 1;
             Weight = weight;
             HitpointsRecovered = hitpoints;
         }
 
-        public override void UseItem()
+        public override void UseItem(Character character)
         {
-            //Character.Hitpoint += HitpointsRecovered;
-            //DestroyItem();
-        }
-
-        public void ItemNotFound()
-        {
-            Console.WriteLine("Item not found");
-        }
-
-        public override void DestroyItem()
-        {
-            //Inventory.DestroyItem(this);
+            character.Hitpoint += HitpointsRecovered;
+            character.Inventory.DestroyItem(this);
         }
     }
 }
