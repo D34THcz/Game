@@ -2,6 +2,6 @@
 {
     public abstract class EquipableArmor : Equipable
     {
-        public abstract int Armor { get; set; }
+        public abstract int ArmorValue { get; set; }
     }
 }
