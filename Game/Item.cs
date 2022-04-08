@@ -13,5 +13,10 @@ namespace Game
         public abstract int Weight { get; set; }
 
         public abstract void UseItem(Character character);
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
