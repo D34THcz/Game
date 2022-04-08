@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Game
+﻿namespace Game
 {
     public abstract class Character
     {
         public abstract string Name { get; set; }
         public abstract int Hitpoint { get; set; }
         public abstract int Strength { get; set; }
-        public abstract EquipableWeapon? EquipedWeapon { get; set; }
-        public abstract EquipableArmor? EquipedArmor { get; set; }
-        public abstract Inventory Inventory { get; set; }
         public abstract int MaxWeight { get; set; }
         public int TotalDamage
         {
@@ -29,6 +20,14 @@ namespace Game
                 return CalculateDefense();
             }
         }
+        public abstract Inventory Inventory { get; set; }
+        public abstract GearSlot EquipedHelm { get; set; }
+        public abstract GearSlot EquipedChest { get; set; }
+        public abstract GearSlot EquipedLegs { get; set; }
+        public abstract GearSlot EquipedWeapon { get; set; }
+        public abstract GearSlot EquipedRingLeft { get; set; }
+        public abstract GearSlot EquipedRingRight { get; set; }
+        public abstract Dictionary<GearSlot, Equipable?> EquipedGear { get; set; } 
 
         public void DealDamage(Character targetCharacter)
         {
@@ -37,71 +36,83 @@ namespace Game
 
         public void ReceiveDamage(int damage)
         {
+            if(damage < 0)
+                damage = 0;
             Hitpoint -= damage;
         }
 
-        public void EquipWeapon(EquipableWeapon weapon) 
+        public void EquipGear(GearSlot slot, Equipable equipable)
         {
-            
-            if(EquipedWeapon != null)
-                Inventory.Items.Add(EquipedWeapon);
-            EquipedWeapon = (EquipableWeapon?)Inventory.Items.Find(x => x == weapon);
-            Inventory.Items.Remove(weapon);
+            if (equipable.SlotType == slot.SlotType)
+            {
+                if (slot.Equipable != null)
+                {
+                    Inventory.AddItem(slot.Equipable);
+                }
+                slot.Equipable = equipable;
+                Inventory.Items.Remove(equipable);
+                EquipedGear[slot] = equipable;
+            }
+            else
+            {
+                Console.WriteLine($"You can not fit {equipable.SlotType} to {slot.SlotType} slot!");
+            }
         }
 
-        public void UnEquipWeapon()
+        public void UnEquipGear(GearSlot slot)
         {
-            if(EquipedWeapon != null)
-                Inventory.Items.Add(EquipedWeapon);
-            EquipedWeapon = null;
-        }
-
-        public void EquipAmor(EquipableArmor armor)
-        {
-            if (EquipedArmor != null)
-                Inventory.Items.Add(EquipedArmor);
-            EquipedArmor = (EquipableArmor?)Inventory.Items.Find(x => x == armor);
-            Inventory.Items.Remove(armor);
-        }
-
-        public void UnEquipArmor()
-        {
-            if (EquipedArmor != null)
-                Inventory.Items.Add(EquipedArmor);
-            EquipedArmor = null;
+            if (slot.Equipable != null) 
+            {
+                Inventory.AddItem(slot.Equipable);
+                slot.Equipable = null;
+                EquipedGear[slot] = null;
+            }
         }
 
         public void UseItem(Item item)
         {
             item.UseItem(this);
         }
-
+                
         public int CalculateTotalDamage()
         {
             var totalDamage = 0;
-            //var strength = 0;
+            var strength = 0;
+            
+            foreach(var item in EquipedGear)
+            {
+                if(item.Value != null)
+                {
+                    if (item.Key.SlotType == Equipable.GearSlotType.WEAPON)
+                    {
+                        var weapon = item.Value as EquipableWeapon;
+                        totalDamage += weapon.Damage;
+                    }
+                    else
+                    {
+                        var strengthItem = item.Value as Equipable;
+                        strength += strengthItem.StrengthBonus;
+                    }
+                }
+            }
 
-            if(EquipedWeapon != null)
-                totalDamage = EquipedWeapon.Damage;
-
-            totalDamage += Strength;
-
-            //foreach (item in EquipedItems)
-            //{
-            //    strength += item.Strength;
-            //}
-
-            //totalDamage = totalDamage * (1 + strength / 100);
-
+            totalDamage *= (1 + strength / 10);
+            Strength = strength;
             return totalDamage;
         }
 
         public int CalculateDefense()
         {
-            var defense = 0;
-            if(EquipedArmor != null)
-                defense = EquipedArmor.ArmorValue;
-            return defense;
+            var totalArmor = 0;
+            foreach (var item in EquipedGear)
+            {
+                if (item.Key.SlotType != Equipable.GearSlotType.WEAPON && item.Key.SlotType != Equipable.GearSlotType.RING)
+                {
+                    var armor = item.Value as EquipableArmor;
+                    totalArmor += armor.ArmorValue;
+                }
+            }
+            return totalArmor;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Game
         public override int Weight { get; set; }
         private static int _id = 0;
 
-        public Weapon(string name, int weight, int damageModifier)
+        public Weapon(string name, int weight, int damageModifier) 
         {
             Name = name;
             Id = _id + 1;
