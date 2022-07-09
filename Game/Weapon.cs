@@ -6,21 +6,26 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    public class Weapon : EquipableWeapon
+    public class Weapon : Equipable
     {
-        public override int Damage { get; set; }
         public override string Name { get; set; }
         public override int Id { get; set; }
         public override int Weight { get; set; }
+        public override EquipmentType Type { get; set; }
+        public override int DamageModifier { get; set; }
+        public override int ArmorModifier { get; set; }
+
         private static int _id = 0;
 
-        public Weapon(string name, int weight, int damageModifier) 
+        public Weapon(string name, int weight, int damageModifier, int armorModifier)
         {
             Name = name;
             Id = _id + 1;
             _id += 1;
             Weight = weight;
-            Damage = damageModifier;
+            DamageModifier = damageModifier;
+            ArmorModifier = armorModifier;
+            Type = EquipmentType.WEAPON;            
         }
 
         public override void UseItem(Character character)

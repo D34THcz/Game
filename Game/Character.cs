@@ -1,118 +1,112 @@
-﻿namespace Game
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Game
 {
     public abstract class Character
     {
         public abstract string Name { get; set; }
         public abstract int Hitpoint { get; set; }
         public abstract int Strength { get; set; }
-        public abstract int MaxWeight { get; set; }
-        public int TotalDamage
-        {
-            get
-            {
-                return CalculateTotalDamage();
-            }
-        }
-        public int Defense
-        {
-            get
-            {
-                return CalculateDefense();
-            }
-        }
+        public abstract Dictionary<int, Equipable> EquipedGear { get; set; }
         public abstract Inventory Inventory { get; set; }
-        public abstract GearSlot EquipedHelm { get; set; }
-        public abstract GearSlot EquipedChest { get; set; }
-        public abstract GearSlot EquipedLegs { get; set; }
-        public abstract GearSlot EquipedWeapon { get; set; }
-        public abstract GearSlot EquipedRingLeft { get; set; }
-        public abstract GearSlot EquipedRingRight { get; set; }
-        public abstract Dictionary<GearSlot, Equipable?> EquipedGear { get; set; } 
-
-        public void DealDamage(Character targetCharacter)
+        public abstract int MaxWeight { get; set; }
+        
+        // Subtract hitpoints of character based on damage reduced by defense stat
+        public int ReceiveDamage(int damage)
         {
-            targetCharacter.ReceiveDamage(TotalDamage - targetCharacter.Defense);
+            var defense = CalculateDefense();
+            var damageReceived = damage - defense;
+            
+            if (damageReceived < 1)
+                damageReceived = 1;
+            
+            Hitpoint -= damageReceived;
+            return damageReceived;
         }
 
-        public void ReceiveDamage(int damage)
+        // Check if item is in characters inventory and if same type is already equiped then unequip item first (switch items)
+        public bool EquipGear(Equipable equipableGear)          
         {
-            if(damage < 0)
-                damage = 0;
-            Hitpoint -= damage;
-        }
-
-        public void EquipGear(GearSlot slot, Equipable equipable)
-        {
-            if (equipable.SlotType == slot.SlotType)
+            if (IsInInventory(equipableGear))
             {
-                if (slot.Equipable != null)
-                {
-                    Inventory.AddItem(slot.Equipable);
-                }
-                slot.Equipable = equipable;
-                Inventory.Items.Remove(equipable);
-                EquipedGear[slot] = equipable;
+                if (EquipedGear.ContainsKey((int)equipableGear.Type))
+                    UnEquipGear(equipableGear);
+                EquipedGear.Add((int)equipableGear.Type, equipableGear);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        // Check if provided gear is equiped and then unequip it
+        public bool UnEquipGear(Equipable equipableGear)
+        {
+            if (EquipedGear.ContainsKey((int)equipableGear.Type))
+            {
+                EquipedGear.Remove((int)equipableGear.Type);
+                return true;
             }
             else
             {
-                Console.WriteLine($"You can not fit {equipable.SlotType} to {slot.SlotType} slot!");
+                return false;
             }
         }
 
-        public void UnEquipGear(GearSlot slot)
+        // Check if provided item is in character's inventory
+        public bool IsInInventory(Item item)
         {
-            if (slot.Equipable != null) 
-            {
-                Inventory.AddItem(slot.Equipable);
-                slot.Equipable = null;
-                EquipedGear[slot] = null;
-            }
-        }
+            if (item == Inventory.Items.Find(x => x == item))
+                return true;
+            else
+                return false;
+        }                
+       
 
         public void UseItem(Item item)
         {
             item.UseItem(this);
         }
-                
-        public int CalculateTotalDamage()
-        {
-            var totalDamage = 0;
-            var strength = 0;
-            
-            foreach(var item in EquipedGear)
-            {
-                if(item.Value != null)
-                {
-                    if (item.Key.SlotType == Equipable.GearSlotType.WEAPON)
-                    {
-                        var weapon = item.Value as EquipableWeapon;
-                        totalDamage += weapon.Damage;
-                    }
-                    else
-                    {
-                        var strengthItem = item.Value as Equipable;
-                        strength += strengthItem.StrengthBonus;
-                    }
-                }
-            }
 
-            totalDamage *= (1 + strength / 10);
-            Strength = strength;
+        // Returns total damage count based on character's strength and equiped gear
+        public int CalculateDamage()
+        {
+            var totalDamage = Strength;
+            
+            foreach (var item in EquipedGear)
+            {
+                totalDamage += item.Value.DamageModifier;
+            }
+                        
             return totalDamage;
         }
 
+        // Returns defense count based on character's equiped gear
         public int CalculateDefense()
         {
-            var totalArmor = 0;
+            var defense = 0;
+
             foreach (var item in EquipedGear)
             {
-                if (item.Key.SlotType != Equipable.GearSlotType.WEAPON && item.Key.SlotType != Equipable.GearSlotType.RING)
-                {
-                    var armor = item.Value as EquipableArmor;
-                    totalArmor += armor.ArmorValue;
-                }
+                defense += item.Value.ArmorModifier;
             }
-            return totalArmor;
+
+            return defense;
+        }
+
+        // Print character's name, basic stats and equiped gear
+        public string PrintCharacterStats()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"__ {Name} __");
+            sb.AppendLine($"Hitpoint: {Hitpoint}");
+            sb.AppendLine("Equiped gear: ");
+            foreach (var item in EquipedGear)
+                sb.AppendLine($"{item.Value.Name}");
+            return sb.ToString();
         }
     }
 }

@@ -1,9 +1,24 @@
-﻿namespace Game
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Game
 {
     public abstract class Equipable : Item
     {
-        public enum GearSlotType { HELM, CHEST, LEGS, WEAPON, RING }
-        public abstract GearSlotType SlotType { get; set; }
-        public virtual int StrengthBonus { get; set; } = 0;
+        public enum EquipmentType
+        {
+            HELM = 0,
+            CHEST = 1,
+            LEGS = 2,
+            WEAPON = 3,
+            RING = 4
+        }
+
+        public abstract EquipmentType Type { get; set; }
+        public abstract int DamageModifier { get; set; }
+        public abstract int ArmorModifier { get; set; }
     }
 }
